@@ -1,9 +1,15 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
+import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
 @TeleOp(name = "Teleop", group = "Teleop")
 public class Teleop extends OpMode {
@@ -14,6 +20,11 @@ public class Teleop extends OpMode {
     private boolean intakeOn = true;      // replaces the intakePower toggle
     private static final double INTAKE_POWER = 1.0;
     private static final double TRIGGER_THRESHOLD = 0.2;
+    private GoBildaPinpointDriver driver;
+    private Pose2D position;
+    private double heading;
+    private double xPos;
+    private double yPos;
 
     public void init(){
         // 2 servo gate, 2 servo rotation, 2 servo claw, 4 motor drive, 2 motor intake, 2 motor shooter
@@ -41,6 +52,8 @@ public class Teleop extends OpMode {
         nectarClaw = hardwareMap.get(Servo.class, "nectarClaw");
         pollenGate = hardwareMap.get(Servo.class, "pollenGate");
         nectarGate = hardwareMap.get(Servo.class, "nectarGate");
+
+        driver = hardwareMap.get(GoBildaPinpointDriver.class, "driver");
     }
 
     public void loop() {
@@ -69,19 +82,39 @@ public class Teleop extends OpMode {
         boolean reverseHeld = gamepad1.left_trigger > TRIGGER_THRESHOLD
                 || gamepad2.left_trigger > TRIGGER_THRESHOLD;
 
-        double intakePower;
+        double intakePower = INTAKE_POWER;
         if (intakeOn) {
-            intakePower = INTAKE_POWER;
         } else if (reverseHeld) {
-            intakePower = INTAKE_POWER;
+            intakeLeft.setDirection(DcMotor.Direction.REVERSE);
+            intakeRight.setDirection(DcMotor.Direction.REVERSE);
         } else {
             intakePower = 0.0;
         }
         intakeLeft.setPower(intakePower);
         intakeRight.setPower(intakePower);
 
+        // Odometry Code
+        driver.update();
+        position = driver.getPosition();
+        heading = position.getHeading(AngleUnit.DEGREES);
+        xPos = position.getX(DistanceUnit.INCH);
+        yPos = position.getY(DistanceUnit.INCH);
+
+        // Experimental Code
+
+        // Define goal's position
+        double targetX = 10;
+        double targetY = 138;
+
+        // Calculate x/y offsets from goal
+        double xOffset = targetX - xPos;
+        double yOffset = targetY - yPos;
+
+        // Determine distance to goal
+        double distanceToTarget = Math.hypot(xOffset, yOffset);
 
         telemetry.addData("Intake", intakeOn ? "ON" : "OFF");
+        telemetry.addData("Distance to Target", distanceToTarget);
         telemetry.update();
     }
 }
