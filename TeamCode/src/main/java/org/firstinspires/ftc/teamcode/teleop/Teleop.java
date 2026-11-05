@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import org.firstinspires.ftc.teamcode.subsystems.turret.ImuAlign;
 
 @TeleOp(name = "Teleop", group = "Teleop")
 public class Teleop extends OpMode {
@@ -54,6 +55,8 @@ public class Teleop extends OpMode {
         nectarGate = hardwareMap.get(Servo.class, "nectarGate");
 
         driver = hardwareMap.get(GoBildaPinpointDriver.class, "driver");
+
+        ImuAlign imuAlign = new ImuAlign();
     }
 
     public void loop() {

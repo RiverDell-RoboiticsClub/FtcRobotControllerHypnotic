@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems.turret;
 
-public class imuAlign {
+public class ImuAlign {
     private double yShoot;
     private double xShoot;
     private double angleShoot;

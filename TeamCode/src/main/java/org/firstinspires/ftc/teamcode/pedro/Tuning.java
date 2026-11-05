@@ -21,11 +21,11 @@ public class Tuning {
     //Automatic pinpoint tuning
     //https://pedropathing.com/docs/pathing/tuning/localization/pinpoint
 
-    /*@Tuner
+    @Tuner
     public static Procedure pinpointTuner() {
         return new PinpointTuner();
-    }*/
 
+    }
     //for two wheel
     //https://pedropathing.com/docs/pathing/tuning/localization/two-wheel
 
