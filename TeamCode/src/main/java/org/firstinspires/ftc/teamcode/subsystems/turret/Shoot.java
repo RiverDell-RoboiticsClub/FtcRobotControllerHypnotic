@@ -5,8 +5,9 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class Shoot {
     private DcMotor intakeLeft, intakeRight, pollenShooter, nectarShooter;
-    private Servo pollenHood, nectarHood, pollenClaw, nectarClaw, pollenGate, nectarGate;
+    private Servo pollenHood, nectarHood, pollenClaw, nectarClaw, pollenGate, nectarGate, pollenTurret, nectarTurret;
 
+    //presets
     private double intakePower = 1000.0;
     private double pollenPower = 4000.0;
     private double nectarPower = 4000.0;
@@ -16,6 +17,8 @@ public class Shoot {
     private double nClawPos = 1.0;
     private double pGatePos = 1.0;
     private double nGatePos = 1.0;
+    private double pTurretPos = 1.0;
+    private double nTurretPos = 1.0;
     public Shoot(DcMotor intakeLeft,DcMotor intakeRight, DcMotor pollenShooter, DcMotor nectarShooter, Servo pollenHood, Servo nectarHood, Servo pollenClaw, Servo nectarClaw, Servo pollenGate, Servo nectarGate){
         this.intakeLeft = intakeLeft;
         this.intakeRight = intakeRight;
@@ -30,6 +33,7 @@ public class Shoot {
     }
     public void pollenShootSequence(double angle){
         intakeLeft.setPower(1000.0);
+
     }
     public void nectarShootSequence(double angle){}
 }

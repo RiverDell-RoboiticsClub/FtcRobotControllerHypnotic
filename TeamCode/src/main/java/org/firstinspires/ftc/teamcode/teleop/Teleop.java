@@ -5,17 +5,21 @@ import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import org.firstinspires.ftc.teamcode.subsystems.tuning.FlywheelPIDF;
 import org.firstinspires.ftc.teamcode.subsystems.turret.ImuAlign;
+import org.firstinspires.ftc.teamcode.subsystems.tuning.FlywheelPIDF;
 
 @TeleOp(name = "Teleop", group = "Teleop")
 public class Teleop extends OpMode {
 
-    private DcMotor frontLeftDrive, backLeftDrive, frontRightDrive, backRightDrive, intakeLeft, intakeRight, pollenShooter, nectarShooter;
+    private DcMotor frontLeftDrive, backLeftDrive, frontRightDrive, backRightDrive, intakeLeft, intakeRight;
+    private DcMotorEx pollenShooter, nectarShooter;
     private Servo pollenHood, nectarHood, pollenClaw, nectarClaw, pollenGate, nectarGate;
     private boolean yPressedLast = false;
     private boolean intakeOn = true;      // replaces the intakePower toggle
@@ -26,6 +30,9 @@ public class Teleop extends OpMode {
     private double heading;
     private double xPos;
     private double yPos;
+    private FlywheelPIDF pollenPID;
+    private FlywheelPIDF nectarPID;
+    private ImuAlign imuAlign;
 
     public void init(){
         // 2 servo gate, 2 servo rotation, 2 servo claw, 4 motor drive, 2 motor intake, 2 motor shooter
@@ -41,8 +48,8 @@ public class Teleop extends OpMode {
 
         intakeLeft = hardwareMap.get(DcMotor.class, "intakeLeft");
         intakeRight = hardwareMap.get(DcMotor.class, "intakeRight");
-        pollenShooter = hardwareMap.get(DcMotor.class, "pollenShooter");
-        nectarShooter = hardwareMap.get(DcMotor.class, "nectarShooter");
+        pollenShooter = hardwareMap.get(DcMotorEx.class, "pollenShooter");
+        nectarShooter = hardwareMap.get(DcMotorEx.class, "nectarShooter");
 
         intakeLeft.setDirection(DcMotor.Direction.FORWARD);
         intakeRight.setDirection(DcMotor.Direction.FORWARD);
@@ -57,6 +64,8 @@ public class Teleop extends OpMode {
         driver = hardwareMap.get(GoBildaPinpointDriver.class, "driver");
 
         ImuAlign imuAlign = new ImuAlign();
+        FlywheelPIDF pollenPID = new FlywheelPIDF(pollenShooter, 0,0,0, 0);
+        FlywheelPIDF nectarPID = new FlywheelPIDF(nectarShooter,0,0,0, 0);
     }
 
     public void loop() {
@@ -95,6 +104,10 @@ public class Teleop extends OpMode {
         }
         intakeLeft.setPower(intakePower);
         intakeRight.setPower(intakePower);
+
+        //PID code
+        pollenPID.runPID(pollenShooter);
+        nectarPID.runPID(nectarShooter);
 
         // Odometry Code
         driver.update();

@@ -28,7 +28,7 @@ public class ImuAlign {
         return distanceToTarget*distanceToRPMConstant;
     }
     public double getTurretAngle(){
-        return angleShoot*(28/20)*(93/130);
+        return angleShoot*(93/130);
     }
 }
 
