@@ -20,6 +20,7 @@ public class Teleop extends OpMode {
     private DcMotorEx pollenShooter, nectarShooter;
     private Servo pollenHood, nectarHood, pollenClaw, nectarClaw, pollenGate, nectarGate;
     private boolean yPressedLast = false;
+    private boolean dPadUPressedLast, dPadDPressedLast, dPadLPressedLast, dPadRPressedLast = false;
     private boolean intakeOn = true;      // replaces the intakePower toggle
     private static final double INTAKE_POWER = 1.0;
     private static final double TRIGGER_THRESHOLD = 0.2;
@@ -104,6 +105,32 @@ public class Teleop extends OpMode {
         }
         intakeLeft.setPower(intakePower);
         intakeRight.setPower(intakePower);
+
+        //Set target Velocity
+        boolean dPadUNow = gamepad2.dpad_up;
+        if (dPadUNow && !dPadUPressedLast) {
+            pollenPID.incrementTargetVelocity(100);
+        }
+        dPadUPressedLast = dPadUNow;
+        boolean dPadDNow = gamepad2.dpad_down;
+        if (dPadDNow && !dPadDPressedLast) {
+            pollenPID.incrementTargetVelocity(-100);
+        }
+        dPadDPressedLast = dPadDNow;
+        boolean dPadLNow = gamepad2.dpad_left;
+        if (dPadLNow && !dPadLPressedLast) {
+            nectarPID.incrementTargetVelocity(-100);
+        }
+        dPadLPressedLast = dPadLNow;
+        boolean dPadRNow = gamepad2.dpad_right;
+        if (dPadRNow && !dPadRPressedLast) {
+            nectarPID.incrementTargetVelocity(100);
+        }
+        dPadRPressedLast = dPadRNow;
+
+        //Shoot sequences
+
+        //Shoot override
 
         //PID code
         pollenPID.runPID(pollenShooter);

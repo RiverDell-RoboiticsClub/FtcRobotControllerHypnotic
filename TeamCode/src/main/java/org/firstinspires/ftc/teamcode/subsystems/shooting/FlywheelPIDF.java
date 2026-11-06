@@ -42,4 +42,7 @@ public class FlywheelPIDF {
             curVelocity = flywheelMotor.getVelocity();
 
     }
+    public void incrementTargetVelocity(double increment){
+        targetVelocity = targetVelocity + increment;
+    }
 }
