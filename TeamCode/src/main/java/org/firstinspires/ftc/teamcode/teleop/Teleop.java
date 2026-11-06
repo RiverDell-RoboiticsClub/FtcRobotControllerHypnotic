@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
-import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -11,9 +10,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
-import org.firstinspires.ftc.teamcode.subsystems.tuning.FlywheelPIDF;
+import org.firstinspires.ftc.teamcode.subsystems.shooting.FlywheelPIDF;
 import org.firstinspires.ftc.teamcode.subsystems.turret.ImuAlign;
-import org.firstinspires.ftc.teamcode.subsystems.tuning.FlywheelPIDF;
 
 @TeleOp(name = "Teleop", group = "Teleop")
 public class Teleop extends OpMode {
@@ -33,6 +31,7 @@ public class Teleop extends OpMode {
     private FlywheelPIDF pollenPID;
     private FlywheelPIDF nectarPID;
     private ImuAlign imuAlign;
+    private double nowMs = System.currentTimeMillis();
 
     public void init(){
         // 2 servo gate, 2 servo rotation, 2 servo claw, 4 motor drive, 2 motor intake, 2 motor shooter
@@ -69,6 +68,7 @@ public class Teleop extends OpMode {
     }
 
     public void loop() {
+
         double y = -gamepad1.left_stick_y;
         double x = gamepad1.left_stick_x;
         double rx = gamepad1.right_stick_x;
