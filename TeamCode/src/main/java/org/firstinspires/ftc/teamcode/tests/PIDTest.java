@@ -26,7 +26,7 @@ public class PIDTest extends OpMode {
 
     @Override
     public void init(){
-        pollenShooter = hardwareMap.get(DcMotorEx.class, "motor");
+        pollenShooter = hardwareMap.get(DcMotorEx.class, "pollenShooter");
         pollenShooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         pollenShooter.setDirection(DcMotorSimple.Direction.REVERSE);
         PIDFCoefficients pidfCoefficients = new PIDFCoefficients(P, 0.0, D, F);
