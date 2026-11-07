@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -20,7 +21,7 @@ public class Teleop extends OpMode {
 
     private DcMotor frontLeftDrive, backLeftDrive, frontRightDrive, backRightDrive, intakeLeft, intakeRight;
     private DcMotorEx pollenShooter, nectarShooter;
-    private Servo pollenHood, nectarHood, pollenClaw, nectarClaw, pollenGate, nectarGate;
+    private Servo pollenClaw, nectarClaw, pollenGate, nectarGate;
 
     private boolean xPressedLast = false;
     private boolean yPressedLast = false;
@@ -60,8 +61,6 @@ public class Teleop extends OpMode {
         intakeLeft.setDirection(DcMotor.Direction.FORWARD);
         intakeRight.setDirection(DcMotor.Direction.FORWARD);
 
-        pollenHood = hardwareMap.get(Servo.class, "pollenHood");
-        nectarHood = hardwareMap.get(Servo.class, "nectarHood");
         pollenClaw = hardwareMap.get(Servo.class, "pollenClaw");
         nectarClaw = hardwareMap.get(Servo.class, "nectarClaw");
         pollenGate = hardwareMap.get(Servo.class, "pollenGate");
@@ -69,17 +68,18 @@ public class Teleop extends OpMode {
 
         driver = hardwareMap.get(GoBildaPinpointDriver.class, "driver");
 
-        ImuAlign imuAlign = new ImuAlign();
-        ClawController clawController = new ClawController(pollenClaw, nectarClaw);
-        GateController gateController = new GateController(pollenGate, nectarGate, intakeLeft, intakeRight, pollenPID, nectarPID);
+        imuAlign = new ImuAlign();
+        clawController = new ClawController(pollenClaw, nectarClaw);
+        gateController = new GateController(pollenGate, nectarGate, intakeLeft, intakeRight, pollenPID, nectarPID);
         pollenPID = new FlywheelPIDF(pollenShooter, 0,0,0, 0);
         nectarPID = new FlywheelPIDF(nectarShooter,0,0,0, 0);
     }
 
+
     public void loop() {
         long nowMs = System.currentTimeMillis();
 
-        double y = -gamepad1.left_stick_y;
+        double y = gamepad1.left_stick_y;//this
         double x = gamepad1.left_stick_x;
         double rx = gamepad1.right_stick_x;
 
@@ -112,16 +112,18 @@ public class Teleop extends OpMode {
 
         double intakePower = INTAKE_POWER;
         if (intakeOn) {
-            intakeLeft.setDirection(DcMotor.Direction.FORWARD);
-            intakeRight.setDirection(DcMotor.Direction.FORWARD);
+            if (gamepad1.right_trigger_pressed) {
+                intakeLeft.setDirection(DcMotor.Direction.REVERSE);
+                intakeRight.setDirection(DcMotor.Direction.REVERSE);
+                intakePower = INTAKE_POWER;
+            }else{
+                    intakeLeft.setDirection(DcMotor.Direction.FORWARD);
+                    intakeRight.setDirection(DcMotor.Direction.FORWARD);
+                    intakePower = INTAKE_POWER;
 
-            intakePower = INTAKE_POWER;
-        } else if (reverseHeld) {
-            intakeLeft.setDirection(DcMotor.Direction.REVERSE);
-            intakeRight.setDirection(DcMotor.Direction.REVERSE);
-
-            intakePower = INTAKE_POWER;
-        } else {
+            }
+        }
+        else {
             intakePower = 0;
         }
         intakeLeft.setPower(intakePower);

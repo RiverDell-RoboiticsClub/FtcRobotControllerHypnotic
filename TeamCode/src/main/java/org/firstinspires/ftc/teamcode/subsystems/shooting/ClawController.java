@@ -15,13 +15,13 @@ public class ClawController {
 
     public ClawController(Servo pollenClaw, Servo nectarClaw) {
         this.pollenClaw = pollenClaw;
-        pollenClaw.setPosition(openPos);
+        pollenClaw.setPosition(closePos);
         this.nectarClaw = nectarClaw;
         nectarClaw.setPosition(openPos);
     }
 
     public void trigger(long nowMs) {
-        pollenClaw.setPosition(closePos);
+        pollenClaw.setPosition(openPos);
         nectarClaw.setPosition(closePos);
         active = true;
         startMs = nowMs;
